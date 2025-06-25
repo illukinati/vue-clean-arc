@@ -12,34 +12,4 @@ export class PackRepositoryImpl implements PackRepository {
       throw new Error('Failed to fetch pack by ID')
     }
   }
-
-  async getPacksBySeries(seriesId: string): Promise<Pack[]> {
-    try {
-      const response = await axiosInstance.get(`/packs/series/${seriesId}`)
-      return response.data
-    } catch (error) {
-      console.error('Error fetching packs by series:', error)
-      throw new Error('Failed to fetch packs by series')
-    }
-  }
-
-  async searchPacks(query: string): Promise<Pack[]> {
-    try {
-      const response = await axiosInstance.get(`/packs/search`, { params: { q: query } })
-      return response.data
-    } catch (error) {
-      console.error('Error searching packs:', error)
-      throw new Error('Failed to search packs')
-    }
-  }
-
-  async getAllPacks(): Promise<Pack[]> {
-    try {
-      const response = await axiosInstance.get('/packs')
-      return response.data
-    } catch (error) {
-      console.error('Error fetching all packs:', error)
-      throw new Error('Failed to fetch all packs')
-    }
-  }
 }

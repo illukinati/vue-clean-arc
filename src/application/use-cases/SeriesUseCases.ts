@@ -8,7 +8,7 @@ import type { SeriesRepository } from '../../domain/repositories/SeriesRepositor
 export class GetAllSeriesUseCase {
   constructor(private seriesRepository: SeriesRepository) {}
 
-  async execute(): Promise<Series[]> {
+  async execute(): Promise<Series> {
     try {
       const series = await this.seriesRepository.getAllSeries()
       return series

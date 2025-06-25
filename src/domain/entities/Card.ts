@@ -1,3 +1,4 @@
+import { effect } from 'vue'
 import { z } from 'zod'
 
 const VariantsSchema = z.object({
@@ -29,6 +30,12 @@ const BoosterSchema = z.object({
   name: z.string(),
 })
 
+const AbilitySchema = z.object({
+  type: z.string(),
+  name: z.string(),
+  effect: z.string(),
+})
+
 export const CardSchema = z.object({
   category: z.string(),
   id: z.string(),
@@ -37,11 +44,15 @@ export const CardSchema = z.object({
   localId: z.string(),
   name: z.string(),
   rarity: z.string(),
+  effect: z.string().optional(),
   variants: VariantsSchema,
   hp: z.number(),
+  trainerType: z.string().optional(),
   types: z.array(z.string()),
   description: z.string(),
   stage: z.string(),
+  suffix: z.string().optional(),
+  abilities: z.array(AbilitySchema).optional(),
   attacks: z.array(AttackSchema),
   weaknesses: z.array(WeaknessSchema),
   retreat: z.number(),
