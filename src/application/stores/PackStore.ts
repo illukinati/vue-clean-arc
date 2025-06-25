@@ -14,35 +14,41 @@ export const usePackStore = defineStore('pack', {
   }),
 
   actions: {
+    setLoading(value: boolean) {
+      this.loading = value
+      if (value) this.error = null
+    },
+    setError(message: string | null) {
+      this.error = message
+      this.loading = false
+    },
+
     async fetchPackById(id: string) {
-      this.loading = true
-      this.error = null
+      this.setLoading(true)
       try {
         this.pack = await getPackByIdUseCase.execute(id)
       } catch (err: any) {
-        this.error = err.message ?? 'Unknown error'
+        this.setError(err.message ?? 'Unknown error')
       } finally {
         this.loading = false
       }
     },
 
     async searchCardsInPack(packId: string, searchTerm: string) {
-      this.loading = true
-      this.error = null
+      this.setLoading(true)
       try {
-        const pack = await getPackByIdUseCase.execute(packId)
-        if (!pack) {
-          throw new Error('Pack not found')
+        let pack = this.pack
+        if (!pack || pack.id !== packId) {
+          pack = await getPackByIdUseCase.execute(packId)
+          if (!pack) throw new Error('Pack not found')
         }
 
-        // Filter cards based on the search term
         const filteredCards = pack.cards.filter((card) =>
           card.name.toLowerCase().includes(searchTerm.toLowerCase()),
         )
-
         this.pack = { ...pack, cards: filteredCards }
       } catch (err: any) {
-        this.error = err.message ?? 'Unknown error'
+        this.setError(err.message ?? 'Unknown error')
       } finally {
         this.loading = false
       }

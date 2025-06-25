@@ -1,27 +1,25 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { storeToRefs } from 'pinia'
-
 import { usePackStore } from '@/application/stores/PackStore'
-import { useCardStore } from '@/application/stores/CardStore'
-
-const modalRef = ref<HTMLDialogElement | null>(null)
+import CardModal from '@/presentation/components/CardModal.vue'
+import NoCardFound from '@/presentation/components/NoCardFound.vue'
 
 const route = useRoute()
 const packId = route.params.id as string
 
 const packStore = usePackStore()
-const cardStore = useCardStore()
-const { card, loading: cardLoading } = storeToRefs(cardStore)
+
+const isModalOpen = ref(false)
+const selectedCardId = ref<string | null>(null)
 
 onMounted(() => {
   packStore.fetchPackById(packId)
 })
 
 function openModal(cardId: string) {
-  cardStore.fetchCardById(cardId)
-  modalRef.value?.showModal()
+  selectedCardId.value = cardId
+  isModalOpen.value = true
 }
 </script>
 
@@ -58,22 +56,9 @@ function openModal(cardId: string) {
     </ul>
   </section>
 
-  <!-- Modal -->
-  <dialog ref="modalRef" class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box">
-      <div v-if="cardLoading" class="h-100 w-full bg-gray-200 animate-pulse rounded-lg" />
-      <img
-        v-else
-        :src="card?.image + '/high.png'"
-        :alt="card?.name"
-        class="object-contain h-100 md:max-h-full md:max-w-full mx-auto"
-        :key="card?.id"
-      />
-      <div class="modal-action justify-center">
-        <form method="dialog">
-          <button class="btn">Close</button>
-        </form>
-      </div>
-    </div>
-  </dialog>
+  <!-- No Cards Found -->
+  <NoCardFound v-if="packStore.pack?.cards.length === 0" />
+
+  <!-- Panggil modal -->
+  <CardModal v-model="isModalOpen" :cardId="selectedCardId" />
 </template>
