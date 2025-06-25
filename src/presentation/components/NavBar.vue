@@ -1,26 +1,55 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+import { usePackStore } from '@/application/stores/PackStore'
+
+const route = useRoute()
+const showSearch = computed(() => route.path.startsWith('/pack/'))
+
+const packStore = usePackStore()
+const packId = route.params.id as string
+
+function onInput(event: Event) {
+  const value = (event.target as HTMLInputElement).value
+  if (value.length >= 3) {
+    searchCards(value)
+  } else {
+    packStore.searchCardsInPack(packId, '')
+  }
+}
+
+function searchCards(query: string) {
+  packStore.searchCardsInPack(packId, query)
+}
+</script>
 
 <template>
-  <div className="navbar bg-base-100 shadow-sm sticky top-0 z-50">
-    <div className="flex-1">
-      <a className="btn btn-ghost text-xl">Pokemon TCG Pocket</a>
+  <div class="navbar bg-base-100 shadow-sm sticky top-0 z-50">
+    <div class="flex-1">
+      <a class="btn btn-ghost text-xl">Pokemon TCG Pocket</a>
     </div>
-    <div className="flex gap-2">
-      <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" />
-      <div className="dropdown dropdown-end">
-        <div tabIndex="{0}" role="button" className="btn btn-ghost btn-circle avatar">
-          <div className="w-10 rounded-full">
+    <div class="flex gap-2">
+      <input
+        v-if="showSearch"
+        type="text"
+        placeholder="Search"
+        class="input input-bordered w-24 md:w-auto"
+        @input="onInput"
+      />
+      <div class="dropdown dropdown-end">
+        <div tabIndex="{0}" role="button" class="btn btn-ghost btn-circle avatar">
+          <div class="w-10 rounded-full">
             <img alt="Tailwind CSS Navbar component" src="/images/pokeball.png" />
           </div>
         </div>
         <ul
           tabIndex="{0}"
-          className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+          class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
         >
           <li>
-            <a className="justify-between">
+            <a class="justify-between">
               Profile
-              <span className="badge">New</span>
+              <span class="badge">New</span>
             </a>
           </li>
           <li><a>Settings</a></li>

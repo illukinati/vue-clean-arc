@@ -19,3 +19,26 @@ export class GetPackByIdUseCase {
     }
   }
 }
+
+export class SearchCardsInPackUseCase {
+  constructor(private packRepository: PackRepository) {}
+
+  async execute(packId: string, searchTerm: string): Promise<Pack | null> {
+    try {
+      const pack = await this.packRepository.getPackById(packId)
+      if (!pack) {
+        throw new Error('Pack not found')
+      }
+
+      // Filter cards based on the search term
+      const filteredCards = pack.cards.filter((card) =>
+        card.name.toLowerCase().includes(searchTerm.toLowerCase()),
+      )
+
+      return { ...pack, cards: filteredCards }
+    } catch (error) {
+      console.error('Error searching cards in pack:', error)
+      throw new Error('Failed to search cards in pack')
+    }
+  }
+}

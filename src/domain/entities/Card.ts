@@ -1,4 +1,3 @@
-import { effect } from 'vue'
 import { z } from 'zod'
 
 const VariantsSchema = z.object({
