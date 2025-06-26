@@ -4,11 +4,13 @@ import { useRoute } from 'vue-router'
 import { usePackStore } from '@/application/stores/PackStore'
 import CardModal from '@/presentation/components/CardModal.vue'
 import NoCardFound from '@/presentation/components/NoCardFound.vue'
+import { useUserCollectionStore } from '@/application/stores/UserCollectionStore'
 
 const route = useRoute()
 const packId = route.params.id as string
 
 const packStore = usePackStore()
+const collectionStore = useUserCollectionStore()
 
 const isModalOpen = ref(false)
 const selectedCardId = ref<string | null>(null)
@@ -46,7 +48,10 @@ function openModal(cardId: string) {
           v-if="card.image"
           :src="card.image + '/low.png'"
           alt="Card Image"
-          class="w-48 h-48 mx-auto object-contain cursor-pointer"
+          :class="[
+            'w-48 h-48 mx-auto object-contain cursor-pointer',
+            collectionStore.isOwned(card.id) && 'grayscale',
+          ]"
           @click="openModal(card.id)"
         />
         <h1 v-else class="text-center text-lg font-bold">
