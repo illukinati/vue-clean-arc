@@ -13,8 +13,8 @@ function onInput(event: Event) {
   const value = (event.target as HTMLInputElement).value
   if (value.length >= 3) {
     searchCards(value)
-  } else {
-    packStore.searchCardsInPack(packId, '')
+  } else if (value.length === 0) {
+    packStore.fetchPackById(packId)
   }
 }
 

@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia'
 import type { Pack } from '@/domain/entities/Pack'
 import { PackRepositoryImpl } from '@/infrastructure/repositories-impl/PackRepositoryImpl'
-import { GetPackByIdUseCase } from '@/application/use-cases/PackUseCases'
+import { GetPackByIdUseCase, SearchCardsInPackUseCase } from '@/application/use-cases/PackUseCases'
 
 const repo = new PackRepositoryImpl()
 const getPackByIdUseCase = new GetPackByIdUseCase(repo)
+const searchCardsInPackUseCase = new SearchCardsInPackUseCase(repo)
 
 export const usePackStore = defineStore('pack', {
   state: () => ({
@@ -37,18 +38,9 @@ export const usePackStore = defineStore('pack', {
     async searchCardsInPack(packId: string, searchTerm: string) {
       this.setLoading(true)
       try {
-        let pack = this.pack
-        if (!pack || pack.id !== packId) {
-          pack = await getPackByIdUseCase.execute(packId)
-          if (!pack) throw new Error('Pack not found')
-        }
-
-        const filteredCards = pack.cards.filter((card) =>
-          card.name.toLowerCase().includes(searchTerm.toLowerCase()),
-        )
-        this.pack = { ...pack, cards: filteredCards }
+        this.pack = await searchCardsInPackUseCase.execute(packId, searchTerm)
       } catch (err: any) {
-        this.setError(err.message ?? 'Unknown error')
+        this.error = err.message ?? 'Unknown error'
       } finally {
         this.loading = false
       }

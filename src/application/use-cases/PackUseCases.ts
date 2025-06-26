@@ -30,7 +30,6 @@ export class SearchCardsInPackUseCase {
         throw new Error('Pack not found')
       }
 
-      // Filter cards based on the search term
       const filteredCards = pack.cards.filter((card) =>
         card.name.toLowerCase().includes(searchTerm.toLowerCase()),
       )
