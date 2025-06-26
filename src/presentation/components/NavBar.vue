@@ -2,24 +2,30 @@
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
 import { usePackStore } from '@/application/stores/PackStore'
+import { useUserCollectionStore } from '@/application/stores/UserCollectionStore'
 
 const route = useRoute()
-const showSearch = computed(() => route.path.startsWith('/pack/'))
+const insidePack = computed(() => route.path.startsWith('/pack/'))
 
 const packStore = usePackStore()
-const packId = route.params.id as string
+const userCollectionStore = useUserCollectionStore()
+const packId = computed(() => route.params.id as string | '')
 
 function onInput(event: Event) {
   const value = (event.target as HTMLInputElement).value
   if (value.length >= 3) {
     searchCards(value)
   } else if (value.length === 0) {
-    packStore.fetchPackById(packId)
+    packStore.fetchPackById(packId.value)
   }
 }
 
 function searchCards(query: string) {
-  packStore.searchCardsInPack(packId, query)
+  packStore.searchCardsInPack(packId.value, query)
+}
+
+function fetchNotOwnedCards() {
+  packStore.fetchNotOwnedCardsInPack(packId.value, userCollectionStore.ownedCardIds)
 }
 </script>
 
@@ -29,8 +35,23 @@ function searchCards(query: string) {
       <a class="btn btn-ghost text-xl">Pokemon TCG Pocket</a>
     </div>
     <div class="flex gap-2">
+      <img
+        v-if="insidePack"
+        src="/images/all-cards.png"
+        alt="all-cards"
+        class="w-18 h-10 btn"
+        @click="searchCards('')"
+      />
+      <img
+        v-if="insidePack"
+        src="/images/not-owned-cards.png"
+        alt="all-cards"
+        class="w-18 h-10 btn"
+        @click="fetchNotOwnedCards"
+      />
+
       <input
-        v-if="showSearch"
+        v-if="insidePack"
         type="text"
         placeholder="Search"
         class="input input-bordered w-24 md:w-auto"

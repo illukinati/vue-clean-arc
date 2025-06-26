@@ -41,3 +41,23 @@ export class SearchCardsInPackUseCase {
     }
   }
 }
+
+export class NotOwnedCardsInPackUseCase {
+  constructor(private packRepository: PackRepository) {}
+
+  async execute(packId: string, ownedCardIds: string[]): Promise<Pack | null> {
+    try {
+      const pack = await this.packRepository.getPackById(packId)
+      if (!pack) {
+        throw new Error('Pack not found')
+      }
+
+      const notOwnedCards = pack.cards.filter((card) => !ownedCardIds.includes(card.id))
+
+      return { ...pack, cards: notOwnedCards }
+    } catch (error) {
+      console.error('Error filtering not owned cards in pack:', error)
+      throw new Error('Failed to filter not owned cards in pack')
+    }
+  }
+}
