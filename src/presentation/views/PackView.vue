@@ -5,11 +5,13 @@ import { usePackStore } from '@/application/stores/PackStore'
 import CardModal from '@/presentation/components/CardModal.vue'
 import NoCardFound from '@/presentation/components/NoCardFound.vue'
 import { useUserCollectionStore } from '@/application/stores/UserCollectionStore'
+import { usePackUIStore } from '@/presentation/stores/PackUIStore'
 
 const route = useRoute()
 const packId = route.params.id as string
 
 const packStore = usePackStore()
+const packUIStore = usePackUIStore()
 const collectionStore = useUserCollectionStore()
 
 const isModalOpen = ref(false)
@@ -42,7 +44,7 @@ function openModal(cardId: string) {
 
   <!-- Cards -->
   <section v-else class="mx-auto">
-    <ul class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-4">
+    <ul class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-4 px-4">
       <li v-for="card in packStore.pack?.cards" :key="card.id">
         <img
           v-if="card.image"
@@ -57,6 +59,22 @@ function openModal(cardId: string) {
         <h1 v-else class="text-center text-lg font-bold">
           {{ card.name }}
         </h1>
+
+        <button
+          v-if="packUIStore.editMode && !collectionStore.isOwned(card.id)"
+          class="btn w-full"
+          @click="collectionStore.addCard(card.id)"
+        >
+          own
+        </button>
+
+        <button
+          v-else-if="packUIStore.editMode && collectionStore.isOwned(card.id)"
+          class="btn w-full"
+          @click="collectionStore.removeCard(card.id)"
+        >
+          remove
+        </button>
       </li>
     </ul>
   </section>

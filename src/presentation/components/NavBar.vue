@@ -3,12 +3,14 @@ import { useRoute } from 'vue-router'
 import { computed } from 'vue'
 import { usePackStore } from '@/application/stores/PackStore'
 import { useUserCollectionStore } from '@/application/stores/UserCollectionStore'
+import { usePackUIStore } from '@/presentation/stores/PackUIStore'
 
 const route = useRoute()
 const insidePack = computed(() => route.path.startsWith('/pack/'))
 
 const packStore = usePackStore()
 const userCollectionStore = useUserCollectionStore()
+const packUIStore = usePackUIStore()
 const packId = computed(() => route.params.id as string | '')
 
 function onInput(event: Event) {
@@ -27,12 +29,16 @@ function searchCards(query: string) {
 function fetchNotOwnedCards() {
   packStore.fetchNotOwnedCardsInPack(packId.value, userCollectionStore.ownedCardIds)
 }
+
+function toggleEditCollection() {
+  packUIStore.toggleEditMode()
+}
 </script>
 
 <template>
   <div class="navbar bg-base-100 shadow-sm sticky top-0 z-50">
     <div class="flex-1">
-      <a class="btn btn-ghost text-xl">Pokemon TCG Pocket</a>
+      <a class="btn btn-ghost text-xl">TCG Pocket</a>
     </div>
     <div class="flex gap-2">
       <img
@@ -67,14 +73,13 @@ function fetchNotOwnedCards() {
           tabIndex="{0}"
           class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
         >
-          <li>
+          <!-- <li>
             <a class="justify-between">
               Profile
               <span class="badge">New</span>
             </a>
-          </li>
-          <li><a>Settings</a></li>
-          <li><a>Logout</a></li>
+          </li> -->
+          <li><a @click="toggleEditCollection">Edit collection</a></li>
         </ul>
       </div>
     </div>
