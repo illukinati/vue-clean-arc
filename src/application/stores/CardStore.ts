@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { Card } from '@/domain/entities/Card'
-import { CardRepositoryImpl } from '@/infrastructure/repositories-impl/CardRepositoyImpl'
+import { CardRepositoryImpl } from '@/infrastructure/repositories-impl/CardRepositoryImpl'
 import { GetCardByIdUseCase } from '@/application/use-cases/CardUseCases'
 
 const repo = new CardRepositoryImpl()

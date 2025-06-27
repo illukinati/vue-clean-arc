@@ -33,12 +33,12 @@ watch(
 
 function handleAdd(id: string) {
   collectionStore.addCard(id)
-  closeModal() // tutup modal
+  closeModal()
 }
 
 function handleRemove(id: string) {
   collectionStore.removeCard(id)
-  closeModal() // tutup modal
+  closeModal()
 }
 
 function closeModal() {

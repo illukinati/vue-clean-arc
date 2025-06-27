@@ -44,7 +44,7 @@ export const CardSchema = z.object({
   name: z.string(),
   rarity: z.string(),
   effect: z.string().optional(),
-  variants: VariantsSchema,
+  variants: VariantsSchema.optional(),
   hp: z.number(),
   trainerType: z.string().optional(),
   types: z.array(z.string()),
@@ -55,7 +55,7 @@ export const CardSchema = z.object({
   attacks: z.array(AttackSchema),
   weaknesses: z.array(WeaknessSchema),
   retreat: z.number(),
-  legal: LegalSchema,
+  legal: LegalSchema.optional(),
   boosters: z.array(BoosterSchema),
   updated: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',

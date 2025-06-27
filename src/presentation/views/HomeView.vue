@@ -13,7 +13,7 @@ onMounted(() => {
   <div class="min-h-screen" v-if="seriesStore.loading">Loading...</div>
   <div class="min-h-screen" v-if="seriesStore.error">{{ seriesStore.error }}</div>
 
-  <section class="mx-auto">
+  <section class="mx-auto" key="series-section">
     <ul v-if="seriesStore.series" class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <li v-for="set in seriesStore.series.sets" :key="set.id">
         <RouterLink :to="`/pack/${set.id}`">
